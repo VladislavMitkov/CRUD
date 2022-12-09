@@ -1,10 +1,9 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import UsersClient from "../api/UsersClient";
 import ErrorModal from "./UI/ErrorModal";
 
-const UpdateUser = (props) => {
+const UpdateUser = () => {
   let { id } = useParams();
   const navigate = useNavigate();
 
@@ -12,9 +11,6 @@ const UpdateUser = (props) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState();
-  // const [newUsername, setNewUsername] = useState("");
-  // const [newPassword, setNewPassword] = useState("");
-  // const [newEmail, setNewEmail] = useState("");
 
   const getUser = async (id) => {
     try {
@@ -73,6 +69,30 @@ const UpdateUser = (props) => {
   const errorHandler = () => {
     setError(null);
   };
+  // prevent from using spaces.
+  const handleKeyDown = (e) => {
+    if (e.key === " ") {
+      setError({
+        title: "Invalid input!",
+        message: "Please don't use spaces for the password.",
+      });
+      e.preventDefault();
+    }
+  };
+  //
+  const handlePassword = (event) => {
+    if (event.currentTarget.value.includes(" ")) {
+      event.currentTarget.value = event.currentTarget.value.replace(/\s/g, "");
+    }
+    setPassword(event.target.value);
+  };
+  //
+  const handleUsername = (event) => {
+    if (event.currentTarget.value.includes(" ")) {
+      event.currentTarget.value = event.currentTarget.value.replace(/\s/g, "");
+    }
+    setUsername(event.target.value);
+  };
 
   return (
     <>
@@ -98,7 +118,8 @@ const UpdateUser = (props) => {
               </label>
               <input
                 value={username}
-                onChange={(event) => setUsername(event.target.value)}
+                onKeyDown={handleKeyDown}
+                onChange={handleUsername}
                 type="text"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-m rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               />
@@ -112,7 +133,8 @@ const UpdateUser = (props) => {
               </label>
               <input
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onKeyDown={handleKeyDown}
+                onChange={handlePassword}
                 type="password"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-m rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               />

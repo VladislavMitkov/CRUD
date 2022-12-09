@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import UsersClient from "../api/UsersClient";
 import ErrorModal from "./UI/ErrorModal";
 
@@ -19,20 +19,15 @@ const CreateUser = (props) => {
 
   const CreateUserHandler = async (event) => {
     event.preventDefault();
-    if (username.trim().length === 0) {
+
+    if (username.length === 0) {
       setError({
         title: "Invalid input!",
-        message: "Please enter a valid username.(non-empty values)",
+        message: "Please enter a valid username.",
       });
       return;
     }
-    if (password.trim().length < 6) {
-      setError({
-        title: "Invalid password!",
-        message: "Please enter password more than 6 symbols.",
-      });
-      return;
-    }
+
     if (!validateEmail(email)) {
       setError({
         title: "Invalid Email!",
@@ -40,11 +35,18 @@ const CreateUser = (props) => {
       });
       return;
     }
+    if (password.length < 6) {
+      setError({
+        title: "Invalid input!",
+        message: "Please enter longer password.",
+      });
+      return;
+    }
 
     const user = {
-      username: username,
-      password: password,
-      email: email,
+      username,
+      password,
+      email,
     };
     try {
       await UsersClient.createUser(user);
@@ -58,12 +60,36 @@ const CreateUser = (props) => {
     setError(null);
   };
 
+  // prevent user to enter spaces in username and password field.
+  const handleKeyDown = (e) => {
+    if (e.key === " ") {
+      setError({
+        title: "Invalid input!",
+        message: "Please don't use spaces.",
+      });
+      e.preventDefault();
+    }
+  };
+  const handlePassword = (event) => {
+    if (event.currentTarget.value.includes(" ")) {
+      event.currentTarget.value = event.currentTarget.value.replace(/\s/g, "");
+    }
+    setPassword(event.target.value);
+  };
+  //
+  const handleUsername = (event) => {
+    if (event.currentTarget.value.includes(" ")) {
+      event.currentTarget.value = event.currentTarget.value.replace(/\s/g, "");
+    }
+    setUsername(event.target.value);
+  };
+
   return (
     <>
       {error && (
         <ErrorModal
           onCofirm={errorHandler}
-          title={error.message}
+          title={error.title}
           message={error.message}
         />
       )}
@@ -83,7 +109,8 @@ const CreateUser = (props) => {
               </label>
               <input
                 value={username}
-                onChange={(event) => setUsername(event.target.value)}
+                onKeyDown={handleKeyDown}
+                onChange={handleUsername}
                 placeholder="enter username"
                 type="text"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-m rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -98,7 +125,8 @@ const CreateUser = (props) => {
               </label>
               <input
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onKeyDown={handleKeyDown}
+                onChange={handlePassword}
                 placeholder="..."
                 type="password"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-m rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"

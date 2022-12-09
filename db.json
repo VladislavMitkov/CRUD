@@ -1,10 +1,28 @@
 {
   "users": [
     {
-      "username": "test",
-      "password": "111111111111111111",
-      "email": "test1@test.com",
-      "id": 1
+      "id": 1,
+      "username": "sgsfg",
+      "password": "Mitkov****",
+      "email": "test@test.com"
+    },
+    {
+      "username": "dsagsdgsdg",
+      "password": "sgddsg   sdgsg****",
+      "email": "test@test.com",
+      "id": 2
+    },
+    {
+      "id": 3,
+      "username": "Vladislav",
+      "password": "mitkoovvo****",
+      "email": "test@test.com"
+    },
+    {
+      "id": 4,
+      "username": "vladi    sdgf",
+      "password": "dsggdgsdgsdgsdgsdgdg",
+      "email": "test@t12.com"
     }
   ]
 }
